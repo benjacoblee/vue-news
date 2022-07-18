@@ -5,7 +5,7 @@
       placeholder="Search"
       :type="type"
       @input="debouncedHandler"
-    >
+    />
   </div>
 </template>
 
