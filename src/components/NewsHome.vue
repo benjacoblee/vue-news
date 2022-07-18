@@ -1,22 +1,40 @@
 <template>
   <NavBar />
   <div class="container mx-auto mt-8 font-mono">
-    <NewsInput type="text" @text-change="handleChange" />
-    <div v-if="loading && !error" class="flex justify-center">
+    <NewsInput
+      type="text"
+      @text-change="handleChange"
+    />
+    <div
+      v-if="loading && !error"
+      class="flex justify-center"
+    >
       <TailwindSpinner />
     </div>
     <div v-if="error && !articlesData.results">
       {{ error }}
     </div>
-    <div v-for="article in articlesData.results" :key="article.link">
+    <div
+      v-for="article in articlesData.results"
+      :key="article.link"
+    >
       <ArticleCard :data="article" />
     </div>
-    <div v-if="shouldRenderPagination" class="text-center m-8">
-      <span v-if="page !== 0" :id="page - 1" @click="handlePageChange($event)">Prev</span>
+    <div
+      v-if="shouldRenderPagination"
+      class="text-center m-8"
+    >
+      <span
+        v-if="page !== 0"
+        :id="page - 1"
+        @click="handlePageChange($event)"
+      >Prev</span>
       <span v-if="page !== 0"> - </span>
-      <span v-if="articlesData.nextPage" :id="page" @click="handlePageChange($event)"
-        >Next</span
-      >
+      <span
+        v-if="articlesData.nextPage"
+        :id="page"
+        @click="handlePageChange($event)"
+      >Next</span>
     </div>
   </div>
 </template>
