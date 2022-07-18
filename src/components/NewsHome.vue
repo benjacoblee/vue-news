@@ -1,19 +1,33 @@
 <template>
-  <NewsInput type="text" @text-change="handleChange" />
-  <div v-if="loading && !error">Loading...</div>
+  <NewsInput
+    type="text"
+    @text-change="handleChange"
+  />
+  <div v-if="loading && !error">
+    Loading...
+  </div>
   <div v-if="error && !articlesData.results">
     {{ error }}
   </div>
-  <div v-for="article in articlesData.results" :key="article.link">
+  <div
+    v-for="article in articlesData.results"
+    :key="article.link"
+  >
     <p>
       <a :href="article.link">{{ article.title }}</a>
     </p>
   </div>
   <div v-if="shouldRenderPagination">
-    <span v-if="page !== 0" :id="page - 1" @click="handlePageChange($event)">Prev -</span>
-    <span v-if="articlesData.nextPage" :id="page" @click="handlePageChange($event)"
-      >Next</span
-    >
+    <span
+      v-if="page !== 0"
+      :id="page - 1"
+      @click="handlePageChange($event)"
+    >Prev -</span>
+    <span
+      v-if="articlesData.nextPage"
+      :id="page"
+      @click="handlePageChange($event)"
+    >Next</span>
   </div>
 </template>
 
