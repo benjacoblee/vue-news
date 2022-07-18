@@ -1,0 +1,20 @@
+{
+    "extends": ["plugin:vue/vue3-recommended"],
+    "rules": {
+        "quotes": ["error", "double"],
+        "no-unused-expressions": "error",
+        "no-nested-ternary": "error",
+        "no-console": "error",
+        "no-duplicate-imports": "error",
+        "no-unreachable": "error",
+        "no-else-return": "error",
+        "no-useless-return": "error"
+    },
+    "globals": {
+        "$ref": "readonly",
+        "$computed": "readonly",
+        "$shallowRef": "readonly",
+        "$customRef": "readonly",
+        "$toRef": "readonly"
+    }
+}
