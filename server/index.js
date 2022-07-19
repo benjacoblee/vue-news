@@ -3,7 +3,7 @@ const serveStatic = require("serve-static");
 const app = express();
 const axios = require("axios").default;
 const path = require("path");
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 require("dotenv").config({
     path: path.resolve(__dirname, "./.env")
