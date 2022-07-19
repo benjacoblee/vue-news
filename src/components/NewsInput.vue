@@ -1,8 +1,12 @@
 <template>
-  <input
-    :type="type"
-    @input="debouncedHandler"
-  >
+  <div class="xs:w-10/12 w-full mx-auto mb-2">
+    <input
+      class="border-b-2 border-gray-200 text-2xl lg:text-5xl text-gray-600 outline-none mb-4"
+      placeholder="Search"
+      :type="type"
+      @input="debouncedHandler"
+    >
+  </div>
 </template>
 
 <script setup>

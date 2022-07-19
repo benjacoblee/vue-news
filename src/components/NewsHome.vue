@@ -1,40 +1,52 @@
 <template>
-  <NewsInput
-    type="text"
-    @text-change="handleChange"
-  />
-  <div v-if="loading && !error">
-    Loading...
-  </div>
-  <div v-if="error && !articlesData.results">
-    {{ error }}
-  </div>
-  <div
-    v-for="article in articlesData.results"
-    :key="article.link"
-  >
-    <p>
-      <a :href="article.link">{{ article.title }}</a>
-    </p>
-  </div>
-  <div v-if="shouldRenderPagination">
-    <span
-      v-if="page !== 0"
-      :id="page - 1"
-      @click="handlePageChange($event)"
-    >Prev -</span>
-    <span
-      v-if="articlesData.nextPage"
-      :id="page"
-      @click="handlePageChange($event)"
-    >Next</span>
+  <NavBar />
+  <div class="container mx-auto mt-8 font-mono">
+    <NewsInput
+      type="text"
+      @text-change="handleChange"
+    />
+
+    <div
+      v-if="loading && !error"
+      class="flex justify-center"
+    >
+      <TailwindSpinner />
+    </div>
+    <div v-if="error && !articlesData.results">
+      {{ error }}
+    </div>
+    <div
+      v-for="article in articlesData.results"
+      :key="article.link"
+    >
+      <ArticleCard :data="article" />
+    </div>
+    <div
+      v-if="shouldRenderPagination"
+      class="text-center m-8"
+    >
+      <span
+        v-if="page !== 0"
+        :id="page - 1"
+        @click="handlePageChange($event)"
+      >Prev</span>
+      <span v-if="page !== 0"> - </span>
+      <span
+        v-if="articlesData.nextPage"
+        :id="page"
+        @click="handlePageChange($event)"
+      >Next</span>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted } from "vue";
 import axios from "axios";
+import NavBar from "./NavBar.vue";
+import TailwindSpinner from "./TailwindSpinner.vue";
 import NewsInput from "./NewsInput.vue";
+import ArticleCard from "./ArticleCard.vue";
 import { generateURL } from "../utils";
 
 const articlesData = $ref({});
