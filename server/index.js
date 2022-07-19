@@ -21,7 +21,7 @@ app.use("/", serveStatic(buildPath));
 // 	res.sendFile(path.join(__dirname, '/dist/index.html'))
 // })
 
-app.get("/", (_req, res) => {
+app.get("/api", (_req, res) => {
     api.get(`news?apikey=${process.env.API_KEY}&language=en`)
         .then(({ data }) => {
             res.json(data);
@@ -31,7 +31,7 @@ app.get("/", (_req, res) => {
         });
 });
 
-app.get("/search", (req, res) => {
+app.get("/api/search", (req, res) => {
     const { q, page } = req.query;
 
     const url = q
