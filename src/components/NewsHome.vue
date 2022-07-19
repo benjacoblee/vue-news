@@ -5,7 +5,6 @@
       type="text"
       @text-change="handleChange"
     />
-
     <div
       v-if="loading && !error"
       class="flex justify-center"
@@ -65,7 +64,10 @@ onMounted(() => {
       articlesData = data;
     })
     .catch(({ response: { status } }) => {
-      if (status === 500) error = "Server error. Try again later";
+      loading = false;
+
+      if (status === 500) error = "Server error. Try again later.";
+      if (status === 400) error = "Request failed. Try again later.";
     });
 });
 
