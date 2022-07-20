@@ -8,14 +8,28 @@
     <div v-if="error && !articlesData.results">
       {{ error }}
     </div>
-    <HashTags v-if="!loading && !error" :categories="CATEGORIES" />
+    <HashTags
+      v-if="!loading && !error"
+      :categories="CATEGORIES"
+      :search-category="searchCategory"
+    />
     <div v-for="article in articlesData.results" :key="article.link">
       <ArticleCard :data="article" />
     </div>
     <div v-if="shouldRenderPagination" class="text-center m-8">
-      <span v-if="page !== 0" :id="page - 1" @click="handlePageChange($event)">Prev</span>
+      <span
+        v-if="page !== 0"
+        :id="page - 1"
+        class="hover:cursor-pointer"
+        @click="handlePageChange($event)"
+        >Prev</span
+      >
       <span v-if="page !== 0"> - </span>
-      <span v-if="articlesData.nextPage" :id="page" @click="handlePageChange($event)"
+      <span
+        v-if="articlesData.nextPage"
+        :id="page"
+        class="hover:cursor-pointer"
+        @click="handlePageChange($event)"
         >Next</span
       >
     </div>
@@ -46,7 +60,10 @@ const shouldRenderPagination = computed(() => articlesData?.nextPage && !loading
 
 watch(
   () => bus.value.get(SELECT_CATEGORY),
-  (value) => handleCategorySelect(value)
+  (value) => {
+    const [category] = value;
+    handleCategorySelect(category);
+  }
 );
 
 onMounted(() => {
