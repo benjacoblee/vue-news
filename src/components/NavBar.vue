@@ -10,11 +10,12 @@
 </template>
 
 <script setup>
+import { REFRESH_PAGE } from "@/constants";
 import useEventsBus from "@/eventbus";
 
 const { emit } = useEventsBus();
 
 function handleClick() {
-  emit("refreshPage");
+  emit(REFRESH_PAGE);
 }
 </script>

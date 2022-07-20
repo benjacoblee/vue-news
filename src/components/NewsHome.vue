@@ -1,60 +1,53 @@
 <template>
   <NavBar />
   <div class="container mx-auto mt-8 font-mono">
-    <NewsInput
-      type="text"
-      @text-change="handleChange"
-    />
-    <div
-      v-if="loading && !error"
-      class="flex justify-center"
-    >
+    <NewsInput type="text" @text-change="handleNewsInputChange" />
+    <div v-if="loading && !error" class="flex justify-center">
       <TailwindSpinner />
     </div>
     <div v-if="error && !articlesData.results">
       {{ error }}
     </div>
-    <div
-      v-for="article in articlesData.results"
-      :key="article.link"
-    >
+    <HashTags v-if="!loading && !error" :categories="CATEGORIES" />
+    <div v-for="article in articlesData.results" :key="article.link">
       <ArticleCard :data="article" />
     </div>
-    <div
-      v-if="shouldRenderPagination"
-      class="text-center m-8"
-    >
-      <span
-        v-if="page !== 0"
-        :id="page - 1"
-        @click="handlePageChange($event)"
-      >Prev</span>
+    <div v-if="shouldRenderPagination" class="text-center m-8">
+      <span v-if="page !== 0" :id="page - 1" @click="handlePageChange($event)">Prev</span>
       <span v-if="page !== 0"> - </span>
-      <span
-        v-if="articlesData.nextPage"
-        :id="page"
-        @click="handlePageChange($event)"
-      >Next</span>
+      <span v-if="articlesData.nextPage" :id="page" @click="handlePageChange($event)"
+        >Next</span
+      >
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import useEventsBus from "@/eventbus";
+import { computed, onMounted, watch } from "vue";
 import axios from "axios";
 import NavBar from "./NavBar.vue";
 import TailwindSpinner from "./TailwindSpinner.vue";
 import NewsInput from "./NewsInput.vue";
 import ArticleCard from "./ArticleCard.vue";
-import { generateURL } from "../utils";
+import HashTags from "./HashTags.vue";
+import { generateURL, queryOptions } from "../utils";
+import { SEARCH, CATEGORY, SELECT_CATEGORY, CATEGORIES } from "../constants";
 
 const articlesData = $ref({});
 const searchTerm = $ref("");
+const searchCategory = $ref("");
 const loading = $ref(true);
 const page = $ref(0);
 const error = $ref("");
 
+const { bus } = useEventsBus();
 const shouldRenderPagination = computed(() => articlesData?.nextPage && !loading);
+
+watch(
+  () => bus.value.get(SELECT_CATEGORY),
+  (value) => handleCategorySelect(value)
+);
 
 onMounted(() => {
   axios
@@ -71,14 +64,45 @@ onMounted(() => {
     });
 });
 
-function handleChange({ value }) {
+function handleNewsInputChange(term) {
   articlesData = {};
   loading = true;
-  searchTerm = value;
+  searchTerm = term;
+  searchCategory = "";
   page = 0;
   error = "";
 
-  const url = generateURL({ val: searchTerm, page });
+  const url = generateURL({ val: searchTerm, page, type: SEARCH });
+
+  axios
+    .get(url)
+    .then(({ data }) => {
+      loading = false;
+
+      if (!data.results?.length) {
+        error = `No match for "${value}"`;
+        return;
+      }
+
+      articlesData = data;
+    })
+    .catch(({ response: { data, status } }) => {
+      if (status === 500) {
+        return (error = "Server error. Try again later");
+      }
+      error = data;
+    });
+}
+
+function handleCategorySelect(category) {
+  articlesData = {};
+  loading = true;
+  searchCategory = category;
+  searchTerm = "";
+  page = 0;
+  error = "";
+
+  const url = generateURL({ val: searchCategory, page, type: CATEGORY });
 
   axios
     .get(url)
@@ -109,7 +133,13 @@ function handlePageChange({ target: { innerHTML, id } }) {
   }
   page = id--;
 
-  const url = generateURL({ val: searchTerm, page });
+  const { val, type } = queryOptions({ searchTerm, searchCategory });
+
+  const url = generateURL({
+    val,
+    page,
+    type,
+  });
 
   axios.get(url).then(({ data }) => {
     loading = false;

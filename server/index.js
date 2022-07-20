@@ -32,11 +32,14 @@ app.get("/api", (_req, res) => {
 });
 
 app.get("/api/search", (req, res) => {
-    const { q, page } = req.query;
+    const { q, category, page } = req.query;
 
-    const url = q
-        ? `news?apikey=${process.env.API_KEY}&language=en&q=${q}&page=${page}`
-        : `news?apikey=${process.env.API_KEY}&language=en&page=${page}`;
+    let url = `news?apikey=${process.env.API_KEY}&language=en`;
+
+    if (q) url += `&q=${q}`;
+    else if (category) url += `&category=${category}`;
+
+    url += `&page=${page}`;
 
     api.get(url)
         .then(({ data }) => {

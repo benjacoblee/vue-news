@@ -4,7 +4,7 @@
         "quotes": ["error", "double"],
         "no-unused-expressions": "error",
         "no-nested-ternary": "error",
-        "no-console": "error",
+        // "no-console": "error",
         "no-duplicate-imports": "error",
         "no-unreachable": "error",
         "no-else-return": "error",

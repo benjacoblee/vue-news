@@ -5,11 +5,12 @@
       placeholder="Search"
       :type="type"
       @input="debouncedHandler"
-    >
+    />
   </div>
 </template>
 
 <script setup>
+import { TEXT_CHANGE } from "@/constants";
 import { onMounted, onUnmounted, toRefs } from "vue";
 
 const { type } = toRefs(props);
@@ -20,11 +21,11 @@ const props = defineProps({
   },
 });
 const debouncedHandler = $ref(null);
-const emit = defineEmits(["text-change"]);
+const emit = defineEmits([TEXT_CHANGE]);
 
 onMounted(() => {
   debouncedHandler = debounce((e) => {
-    emit("text-change", e.target);
+    emit(TEXT_CHANGE, e.target.value);
   }, 1000);
 });
 
@@ -35,7 +36,6 @@ onUnmounted(() => {
 function debounce(func, delay) {
   if (!delay) return;
   let timeout;
-  // eslint-disable-next-line
   return (...args) => {
     if (timeout) {
       clearTimeout(timeout);
